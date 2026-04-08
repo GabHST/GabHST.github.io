@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leet — Developer & Tool Builder</title>
+<title>Leet</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -562,9 +563,10 @@ section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
 
 /* RESPONSIVE */
 @media(max-width:768px){
-  .nav{padding:.8rem 1rem}
-  .nav-links{gap:1rem}
-  .nav-links a{font-size:.75rem}
+  .nav{padding:.8rem 1rem;flex-wrap:wrap;gap:.5rem}
+  .nav-links{gap:.8rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;width:100%;order:2;justify-content:flex-start;padding-bottom:4px}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{font-size:.75rem;white-space:nowrap}
   .hero-name{font-size:2.5rem}
   section{padding:4rem 1.2rem}
   .stats-bar{gap:1.5rem;padding:1.5rem}
@@ -716,7 +718,7 @@ section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
       <div class="exp-content">
         <h3 class="exp-role" data-i18n="exp.pw.role">Founder &amp; Lead Developer</h3>
         <div class="exp-company" data-i18n="exp.pw.company">PW Nostalgium — Perfect World Private Server</div>
-        <p class="exp-desc" data-i18n="exp.pw.desc">Founded and managed two Perfect World private servers with active player communities. Built and maintained the Classic 1.3.6 and Raging Tides 1.4.2 versions. Handled full-stack server administration including database management, server configuration, anti-cheat systems, community events (PvP tournaments), and player support. Managed game economy, class balancing, and custom content.</p>
+        <p class="exp-desc" data-i18n="exp.pw.desc">Founded and managed two highly successful Perfect World private servers, both reaching over 1,000 concurrent players at peak hours. Built and maintained the Classic 1.3.6 and Raging Tides 1.4.2 versions. Handled full-stack server development including database architecture, server-side scripting, anti-cheat systems, community events (PvP tournaments), and player support.</p>
       </div>
     </div>
   </div>
@@ -761,35 +763,6 @@ section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
       </div>
     </a>
 
-    <a class="project-card" href="https://github.com/GabHST/FillRaidBots" target="_blank" rel="noopener" data-repo="FillRaidBots">
-      <div class="p-icon">👥</div>
-      <div class="p-title">FillRaidBots</div>
-      <div class="p-desc" data-i18n="project.fillraidbots.desc">Automated raid slot filler for WoW private servers. Fills empty raid spots with configurable bot characters for testing and solo play.</div>
-      <div class="p-tags">
-        <span class="p-tag">Lua</span>
-        <span class="p-tag">WoW</span>
-        <span class="p-tag">Bots</span>
-      </div>
-      <div class="p-stats">
-        <span>⭐ <span class="repo-stars" data-repo="FillRaidBots">--</span></span>
-        <span>🍴 <span class="repo-forks" data-repo="FillRaidBots">--</span></span>
-      </div>
-    </a>
-
-    <a class="project-card" href="https://github.com/GabHST/PCPRemake" target="_blank" rel="noopener" data-repo="PCPRemake">
-      <div class="p-icon">🔧</div>
-      <div class="p-title">PCPRemake</div>
-      <div class="p-desc" data-i18n="project.pcpremake.desc">Remake of a classic PC utility tool with modern improvements. Updated interface, better performance, and extended feature set.</div>
-      <div class="p-tags">
-        <span class="p-tag">C#</span>
-        <span class="p-tag">Desktop</span>
-        <span class="p-tag">Utility</span>
-      </div>
-      <div class="p-stats">
-        <span>⭐ <span class="repo-stars" data-repo="PCPRemake">--</span></span>
-        <span>🍴 <span class="repo-forks" data-repo="PCPRemake">--</span></span>
-      </div>
-    </a>
 
     <a class="project-card" href="https://github.com/GabHST/PartyPresets" target="_blank" rel="noopener" data-repo="PartyPresets">
       <div class="p-icon">🎉</div>
@@ -976,7 +949,7 @@ var i18n = {
     'exp.pw.date': '2018 \u2014 2020',
     'exp.pw.role': 'Founder & Lead Developer',
     'exp.pw.company': 'PW Nostalgium \u2014 Perfect World Private Server',
-    'exp.pw.desc': 'Founded and managed two Perfect World private servers with active player communities. Built and maintained the Classic 1.3.6 and Raging Tides 1.4.2 versions. Handled full-stack server development including database architecture, server-side scripting, anti-cheat systems, community events (PvP tournaments), and player support.',
+    'exp.pw.desc': 'Founded and managed two highly successful Perfect World private servers, both reaching over 1,000 concurrent players at peak hours. Built and maintained the Classic 1.3.6 and Raging Tides 1.4.2 versions. Handled full-stack server development including database architecture, server-side scripting, anti-cheat systems, community events (PvP tournaments), and player support.',
     'exp.wow.date': '2023 \u2014 Present',
     'exp.wow.role': 'Addon Developer & Tool Builder',
     'exp.wow.company': 'SoloCraft / WoW 1.12.1 Ecosystem',
@@ -1043,7 +1016,7 @@ var i18n = {
     'exp.pw.date': '2018 \u2014 2020',
     'exp.pw.role': 'Fundador & Desenvolvedor Principal',
     'exp.pw.company': 'PW Nostalgium \u2014 Servidor Privado de Perfect World',
-    'exp.pw.desc': 'Fundei e gerenciei dois servidores privados de Perfect World com comunidades ativas de jogadores. Constru\u00ed e mantive as vers\u00f5es Cl\u00e1ssica 1.3.6 e Mar em F\u00faria 1.4.2. Atuei no desenvolvimento full-stack do servidor incluindo arquitetura de banco de dados, scripting server-side, sistemas anti-cheat, eventos comunit\u00e1rios (torneios PvP) e suporte aos jogadores.',
+    'exp.pw.desc': 'Fundei e gerenciei dois servidores privados de Perfect World de grande sucesso, ambos com mais de 1.000 jogadores online em hor\u00e1rios de pico. Constru\u00ed e mantive as vers\u00f5es Cl\u00e1ssica 1.3.6 e Mar em F\u00faria 1.4.2. Atuei no desenvolvimento full-stack do servidor incluindo arquitetura de banco de dados, scripting server-side, sistemas anti-cheat, eventos comunit\u00e1rios (torneios PvP) e suporte aos jogadores.',
     'exp.wow.date': '2023 \u2014 Presente',
     'exp.wow.role': 'Desenvolvedor de Addons & Ferramentas',
     'exp.wow.company': 'SoloCraft / Ecossistema WoW 1.12.1',
@@ -1301,7 +1274,7 @@ document.querySelectorAll('.project-card').forEach(function(card) {
 /* =====================================================
    GITHUB STATS (LIVE FETCH + CACHE)
    ===================================================== */
-var REPOS = ['CDP-Scraper','VanillaGuide-Enhanced','FillRaidBots','PCPRemake','PartyPresets','QuestPlates','DebugLog'];
+var REPOS = ['CDP-Scraper','VanillaGuide-Enhanced','PartyPresets','QuestPlates','DebugLog'];
 var CACHE_KEY = 'gh_stats_cache';
 var CACHE_TTL = 1000 * 60 * 30;
 
@@ -1395,6 +1368,28 @@ document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(link) {
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+/* === ANIMATED TAB TITLE === */
+(function(){
+  var base = 'Leet - ';
+  var word = 'Developer';
+  var ci = 0, del = false;
+  function tick(){
+    if(!del){
+      ci++;
+      document.title = base + word.substring(0,ci);
+      if(ci===word.length){setTimeout(tick,2000);return;}
+      setTimeout(tick,120);
+    } else {
+      ci--;
+      document.title = ci>0 ? base + word.substring(0,ci) : 'Leet';
+      if(ci===0){del=false;setTimeout(tick,500);return;}
+      setTimeout(tick,60);
+    }
+  }
+  setTimeout(function(){del=false;ci=0;tick();},1000);
+  setInterval(function(){if(ci===word.length&&!del){del=true;tick();}},4000);
+})();
 </script>
 </body>
 </html>

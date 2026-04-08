@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leet — Developer & Tool Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#00d4ff;
+  --secondary:#a855f7;
+  --accent:#ff6b9d;
+  --bg:#050510;
+  --surface:rgba(255,255,255,.03);
+  --surface-hover:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.06);
+  --border-hover:rgba(255,255,255,.12);
+  --text:#e2e8f0;
+  --text-dim:rgba(255,255,255,.45);
+  --text-bright:#ffffff;
+  --font-sans:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --glow-primary:0 0 30px rgba(0,212,255,.25);
+  --glow-secondary:0 0 30px rgba(168,85,247,.25);
+  --glow-accent:0 0 30px rgba(255,107,157,.25);
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--primary) var(--bg)}
+body{
+  font-family:var(--font-sans);
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+  line-height:1.6;
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
+
+/* CUSTOM CURSOR */
+.cursor{
+  width:20px;height:20px;
+  border:2px solid var(--primary);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;
+  z-index:10000;
+  transition:width .2s,height .2s,border-color .2s,background .2s,transform .2s;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+}
+.cursor.hover{
+  width:50px;height:50px;
+  background:rgba(0,212,255,.1);
+  border-color:var(--accent);
+}
+.cursor-dot{
+  width:5px;height:5px;
+  background:var(--primary);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;
+  z-index:10001;
+  transform:translate(-50%,-50%);
+  transition:opacity .2s;
+}
+
+/* ANIMATED GRADIENT BACKGROUND */
+.bg-gradient{
+  position:fixed;inset:0;z-index:-5;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(0,212,255,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(168,85,247,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(255,107,157,.04) 0%, transparent 60%),
+    var(--bg);
+  animation:bgShift 15s ease-in-out infinite alternate;
+}
+@keyframes bgShift{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(20deg)}
+}
+
+/* FLOATING ORBS */
+.orb{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.4;
+  z-index:-4;
+  animation:orbFloat 20s ease-in-out infinite;
+}
+.orb-1{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(0,212,255,.3),transparent 70%);
+  top:10%;left:10%;
+  animation-duration:22s;
+}
+.orb-2{
+  width:350px;height:350px;
+  background:radial-gradient(circle,rgba(168,85,247,.25),transparent 70%);
+  top:60%;right:10%;
+  animation-duration:18s;animation-delay:-5s;
+}
+.orb-3{
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(255,107,157,.2),transparent 70%);
+  bottom:10%;left:40%;
+  animation-duration:25s;animation-delay:-10s;
+}
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  25%{transform:translate(40px,-60px) scale(1.1)}
+  50%{transform:translate(-30px,40px) scale(.9)}
+  75%{transform:translate(50px,20px) scale(1.05)}
+}
+
+/* PARTICLE CANVAS */
+#particles{position:fixed;inset:0;z-index:-3;pointer-events:none}
+
+/* SCANLINES */
+.scanlines{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.03) 2px,
+    rgba(0,0,0,.03) 4px
+  );
+}
+
+/* GRID OVERLAY */
+.grid-overlay{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+}
+
+/* NOISE OVERLAY */
+.noise{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:256px 256px;
+}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:1000;
+  padding:1rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(5,5,16,.7);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .3s;
+}
+.nav.scrolled{background:rgba(5,5,16,.9)}
+.nav-logo{
+  font-family:var(--font-mono);
+  font-size:1.3rem;font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.nav-links{display:flex;align-items:center;gap:1.8rem;list-style:none}
+.nav-links a{
+  color:var(--text-dim);
+  text-decoration:none;
+  font-size:.85rem;font-weight:500;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  transition:color .3s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:2px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  transition:width .3s;
+}
+.nav-links a:hover{color:var(--text-bright)}
+.nav-links a:hover::after{width:100%}
+.lang-switcher{display:flex;gap:4px;margin-left:.5rem}
+.lang-btn{
+  padding:4px 10px;
+  font-size:.7rem;font-weight:700;
+  font-family:var(--font-mono);
+  border:1px solid var(--border);
+  border-radius:4px;
+  background:transparent;
+  color:var(--text-dim);
+  cursor:none;
+  transition:all .3s;
+  text-transform:uppercase;
+}
+.lang-btn.active{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:var(--bg);
+  border-color:transparent;
+}
+.lang-btn:hover{border-color:var(--primary);color:var(--text-bright)}
+
+/* SECTIONS */
+section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
+.section-reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.section-reveal.visible{opacity:1;transform:translateY(0)}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding-top:5rem;
+  position:relative;
+}
+.avatar-wrapper{
+  position:relative;
+  width:160px;height:160px;
+  margin-bottom:2rem;
+}
+.avatar-ring{
+  position:absolute;inset:-6px;
+  border-radius:50%;
+  background:conic-gradient(var(--primary),var(--secondary),var(--accent),var(--primary));
+  animation:spinRing 4s linear infinite;
+  z-index:0;
+}
+@keyframes spinRing{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.avatar-ring::after{
+  content:'';
+  position:absolute;inset:3px;
+  border-radius:50%;
+  background:var(--bg);
+}
+.avatar{
+  width:160px;height:160px;
+  border-radius:50%;
+  position:relative;z-index:1;
+  object-fit:cover;
+  animation:avatarGlow 3s ease-in-out infinite alternate;
+}
+@keyframes avatarGlow{
+  0%{box-shadow:0 0 20px rgba(0,212,255,.3),0 0 40px rgba(0,212,255,.1)}
+  100%{box-shadow:0 0 30px rgba(168,85,247,.4),0 0 60px rgba(168,85,247,.15)}
+}
+.hero-name{
+  font-size:3.5rem;font-weight:900;
+  letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--text-bright) 0%,var(--primary) 50%,var(--secondary) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.4rem;
+}
+.hero-title{
+  font-size:1.1rem;font-weight:400;
+  color:var(--text-dim);
+  margin-bottom:1.5rem;
+}
+.typewriter{
+  font-family:var(--font-mono);
+  font-size:.95rem;
+  color:var(--primary);
+  min-height:1.5em;
+  margin-bottom:2rem;
+}
+.typewriter .cursor-blink{animation:blink .7s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* SOCIAL BAR (GLASSMORPHISM) */
+.social-bar{
+  display:flex;gap:1rem;
+  padding:.8rem 1.5rem;
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:50px;
+}
+.social-link{
+  display:flex;align-items:center;gap:.5rem;
+  color:var(--text-dim);
+  text-decoration:none;
+  font-size:.8rem;
+  padding:.4rem .8rem;
+  border-radius:20px;
+  transition:all .3s;
+}
+.social-link:hover{
+  color:var(--primary);
+  background:rgba(0,212,255,.08);
+}
+.social-link svg{flex-shrink:0}
+
+/* STATS BAR */
+.stats-bar{
+  display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;
+  padding:2rem;
+  margin:0 auto;max-width:900px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:16px;
+  backdrop-filter:blur(10px);
+}
+.stat-item{text-align:center}
+.stat-value{
+  font-family:var(--font-mono);
+  font-size:1.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.stat-label{
+  font-size:.75rem;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-top:.2rem;
+}
+
+/* SECTION HEADERS */
+.section-header{
+  text-align:center;
+  margin-bottom:3rem;
+}
+.section-tag{
+  font-family:var(--font-mono);
+  font-size:.75rem;
+  color:var(--primary);
+  text-transform:uppercase;
+  letter-spacing:2px;
+  margin-bottom:.5rem;
+}
+.section-title{
+  font-size:2.2rem;font-weight:800;
+  background:linear-gradient(135deg,var(--text-bright),var(--text));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ABOUT */
+.about-text{
+  max-width:700px;
+  margin:0 auto 3rem;
+  text-align:center;
+  color:var(--text-dim);
+  font-size:.95rem;
+  line-height:1.8;
+}
+.highlight-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1rem;
+}
+.highlight-card{
+  padding:1.2rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  text-align:center;
+  transition:all .3s;
+}
+.highlight-card:hover{
+  border-color:var(--primary);
+  background:var(--surface-hover);
+  transform:translateY(-4px);
+  box-shadow:var(--glow-primary);
+}
+.highlight-card .h-icon{font-size:1.5rem;margin-bottom:.5rem}
+.highlight-card .h-title{
+  font-size:.8rem;font-weight:600;
+  color:var(--text-bright);
+}
+
+/* PROJECT CARDS */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1.5rem;
+}
+.project-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:1.8rem;
+  position:relative;
+  overflow:hidden;
+  transition:transform .4s,box-shadow .4s;
+  transform-style:preserve-3d;
+  perspective:800px;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+.project-card::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:16px;
+  padding:1px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary),var(--accent));
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  -webkit-mask-composite:xor;
+  opacity:0;
+  transition:opacity .4s;
+}
+.project-card:hover::before{opacity:1}
+.project-card:hover{
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
+}
+.project-card.featured{
+  grid-column:span 1;
+  border-color:rgba(0,212,255,.15);
+}
+.project-card.featured::after{
+  content:'FEATURED';
+  position:absolute;top:12px;right:12px;
+  font-family:var(--font-mono);
+  font-size:.55rem;font-weight:700;
+  color:var(--bg);
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  padding:3px 10px;
+  border-radius:4px;
+  letter-spacing:1px;
+}
+.p-icon{font-size:2rem;margin-bottom:.8rem}
+.p-title{
+  font-size:1.1rem;font-weight:700;
+  color:var(--text-bright);
+  margin-bottom:.4rem;
+}
+.p-desc{
+  font-size:.85rem;
+  color:var(--text-dim);
+  margin-bottom:1rem;
+  line-height:1.6;
+}
+.p-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.p-tag{
+  font-family:var(--font-mono);
+  font-size:.65rem;
+  color:var(--primary);
+  background:rgba(0,212,255,.08);
+  border:1px solid rgba(0,212,255,.15);
+  padding:2px 8px;
+  border-radius:4px;
+}
+.p-stats{
+  display:flex;gap:1rem;
+  font-family:var(--font-mono);
+  font-size:.75rem;
+  color:var(--text-dim);
+}
+.p-stats span{display:flex;align-items:center;gap:.3rem}
+
+/* SKILLS */
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.2rem;
+  margin-bottom:3rem;
+}
+.skill-card{
+  padding:1.5rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  transition:all .3s;
+}
+.skill-card:hover{
+  border-color:var(--secondary);
+  transform:translateY(-4px);
+  box-shadow:var(--glow-secondary);
+}
+.skill-icon{font-size:1.5rem;margin-bottom:.6rem}
+.skill-name{
+  font-size:.95rem;font-weight:700;
+  color:var(--text-bright);
+  margin-bottom:.3rem;
+}
+.skill-desc{
+  font-size:.8rem;
+  color:var(--text-dim);
+  line-height:1.5;
+}
+
+/* TECH STACK PILLS */
+.tech-pills{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;
+}
+.tech-pill{
+  font-family:var(--font-mono);
+  font-size:.75rem;font-weight:500;
+  color:var(--text);
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:.5rem 1.2rem;
+  border-radius:50px;
+  transition:all .3s;
+}
+.tech-pill:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  box-shadow:var(--glow-accent);
+  transform:translateY(-2px);
+}
+
+/* CONTACT */
+.contact-center{text-align:center}
+.contact-text{
+  color:var(--text-dim);
+  font-size:.95rem;
+  margin-bottom:1.5rem;
+}
+.contact-link{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.8rem 2rem;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:var(--bg);
+  font-weight:700;font-size:.9rem;
+  text-decoration:none;
+  border-radius:50px;
+  transition:all .3s;
+}
+.contact-link:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 30px rgba(0,212,255,.3);
+}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  padding:3rem 2rem;
+  border-top:1px solid var(--border);
+  color:var(--text-dim);
+  font-size:.8rem;
+}
+.footer span{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:700;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav{padding:.8rem 1rem}
+  .nav-links{gap:1rem}
+  .nav-links a{font-size:.75rem}
+  .hero-name{font-size:2.5rem}
+  section{padding:4rem 1.2rem}
+  .stats-bar{gap:1.5rem;padding:1.5rem}
+  .stat-value{font-size:1.4rem}
+  .social-bar{flex-wrap:wrap;justify-content:center}
+  .projects-grid{grid-template-columns:1fr}
+  .cursor,.cursor-dot{display:none}
+  body{cursor:auto}
+}
+@media(max-width:480px){
+  .nav-links a:not(.lang-area *){font-size:.7rem}
+  .hero-name{font-size:2rem}
+  .highlight-cards{grid-template-columns:1fr 1fr}
+  .skills-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Overlays -->
+<div class="bg-gradient"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<canvas id="particles"></canvas>
+<div class="scanlines"></div>
+<div class="grid-overlay"></div>
+<div class="noise"></div>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">&lt;Leet/&gt;</div>
+  <ul class="nav-links">
+    <li><a href="#about" data-i18n="nav.about">About</a></li>
+    <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+    <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+    <li><a href="#mods" data-i18n="nav.mods">Mods</a></li>
+    <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+    <li><a href="https://github.com/GabHST" target="_blank" rel="noopener">GitHub</a></li>
+    <li class="lang-area">
+      <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="pt">BR</button>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="avatar-wrapper">
+    <div class="avatar-ring"></div>
+    <img class="avatar" src="https://avatars.githubusercontent.com/u/44398118?v=4" alt="Leet" width="160" height="160">
+  </div>
+  <h1 class="hero-name">Leet</h1>
+  <p class="hero-title" data-i18n="hero.title">Developer &amp; Tool Builder</p>
+  <div class="typewriter" id="typewriter"><span class="tw-text"></span><span class="cursor-blink">|</span></div>
+  <div class="social-bar">
+    <a class="social-link" href="https://github.com/GabHST" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      <span>GitHub</span>
+    </a>
+    <a class="social-link" href="mailto:pessoalhst9723@outlook.com">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <span>Email</span>
+    </a>
+    <a class="social-link" href="https://steamcommunity.com/id/L337Plays/" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/></svg>
+      <span>Steam</span>
+    </a>
+    <a class="social-link" href="#" onclick="navigator.clipboard.writeText('leetplay');this.querySelector('span').textContent='Copied!';setTimeout(()=>this.querySelector('span').textContent='Discord',1500);return false;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286z"/></svg>
+      <span>Discord</span>
+    </a>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar section-reveal" id="stats-bar">
+  <div class="stat-item">
+    <div class="stat-value" id="stat-repos">7</div>
+    <div class="stat-label" data-i18n="stats.repos">Repositories</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" id="stat-stars">--</div>
+    <div class="stat-label">Stars</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" id="stat-downloads">--</div>
+    <div class="stat-label">Downloads</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">100%</div>
+    <div class="stat-label">Open Source</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="section-reveal">
+  <div class="section-header">
+    <div class="section-tag" data-i18n="about.tag">// Background</div>
+    <h2 class="section-title" data-i18n="about.title">About Me</h2>
+  </div>
+  <p class="about-text" data-i18n="about.text">
+    I build tools for gaming communities and the open-source ecosystem. From WoW 1.12.1 addon development and reverse engineering game systems, to anti-detection web scraping with Chrome DevTools Protocol and bot architecture design. My work spans security research, database systems, and automation — always with a focus on practical, battle-tested solutions.
+  </p>
+  <div class="highlight-cards">
+    <div class="highlight-card">
+      <div class="h-icon">🎮</div>
+      <div class="h-title" data-i18n="about.card1">Game Addon Dev</div>
+    </div>
+    <div class="highlight-card">
+      <div class="h-icon">🕷️</div>
+      <div class="h-title" data-i18n="about.card2">Web Scraping</div>
+    </div>
+    <div class="highlight-card">
+      <div class="h-icon">🔐</div>
+      <div class="h-title" data-i18n="about.card3">Security Research &amp; RE</div>
+    </div>
+    <div class="highlight-card">
+      <div class="h-icon">🤖</div>
+      <div class="h-title" data-i18n="about.card4">Bot Architecture &amp; Automation</div>
+    </div>
+    <div class="highlight-card">
+      <div class="h-icon">🗄️</div>
+      <div class="h-title" data-i18n="about.card5">Database &amp; Server Systems</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section-reveal">
+  <div class="section-header">
+    <div class="section-tag" data-i18n="projects.tag">// Featured Work</div>
+    <h2 class="section-title" data-i18n="projects.title">Projects</h2>
+  </div>
+  <div class="projects-grid">
+
+    <a class="project-card featured" href="https://github.com/GabHST/CDP-Scraper" target="_blank" rel="noopener" data-repo="CDP-Scraper">
+      <div class="p-icon">🕵️</div>
+      <div class="p-title">CDP Scraper</div>
+      <div class="p-desc" data-i18n="project.cdp.desc">Anti-detection web scraper using Chrome DevTools Protocol. Bypasses Cloudflare and bot protection through real browser automation with stealth techniques.</div>
+      <div class="p-tags">
+        <span class="p-tag">Python</span>
+        <span class="p-tag">CDP</span>
+        <span class="p-tag">Stealth</span>
+        <span class="p-tag">Scraping</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="CDP-Scraper">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="CDP-Scraper">--</span></span>
+      </div>
+    </a>
+
+    <a class="project-card featured" href="https://github.com/GabHST/VanillaGuide-Enhanced" target="_blank" rel="noopener" data-repo="VanillaGuide-Enhanced">
+      <div class="p-icon">📖</div>
+      <div class="p-title">VanillaGuide Enhanced</div>
+      <div class="p-desc" data-i18n="project.vanillaguide.desc">Enhanced leveling guide addon for WoW 1.12.1 (Vanilla). Improved UI, quest tracking, and step-by-step guidance for efficient 1-60 leveling.</div>
+      <div class="p-tags">
+        <span class="p-tag">Lua</span>
+        <span class="p-tag">WoW API</span>
+        <span class="p-tag">Addon</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="VanillaGuide-Enhanced">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="VanillaGuide-Enhanced">--</span></span>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://github.com/GabHST/FillRaidBots" target="_blank" rel="noopener" data-repo="FillRaidBots">
+      <div class="p-icon">👥</div>
+      <div class="p-title">FillRaidBots</div>
+      <div class="p-desc" data-i18n="project.fillraidbots.desc">Automated raid slot filler for WoW private servers. Fills empty raid spots with configurable bot characters for testing and solo play.</div>
+      <div class="p-tags">
+        <span class="p-tag">Lua</span>
+        <span class="p-tag">WoW</span>
+        <span class="p-tag">Bots</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="FillRaidBots">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="FillRaidBots">--</span></span>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://github.com/GabHST/PCPRemake" target="_blank" rel="noopener" data-repo="PCPRemake">
+      <div class="p-icon">🔧</div>
+      <div class="p-title">PCPRemake</div>
+      <div class="p-desc" data-i18n="project.pcpremake.desc">Remake of a classic PC utility tool with modern improvements. Updated interface, better performance, and extended feature set.</div>
+      <div class="p-tags">
+        <span class="p-tag">C#</span>
+        <span class="p-tag">Desktop</span>
+        <span class="p-tag">Utility</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="PCPRemake">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="PCPRemake">--</span></span>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://github.com/GabHST/PartyPresets" target="_blank" rel="noopener" data-repo="PartyPresets">
+      <div class="p-icon">🎉</div>
+      <div class="p-title">PartyPresets</div>
+      <div class="p-desc" data-i18n="project.partypresets.desc">Party configuration presets manager for WoW. Save, load, and share group compositions with one click for faster dungeon and raid setup.</div>
+      <div class="p-tags">
+        <span class="p-tag">Lua</span>
+        <span class="p-tag">WoW API</span>
+        <span class="p-tag">Addon</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="PartyPresets">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="PartyPresets">--</span></span>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://github.com/GabHST/QuestPlates" target="_blank" rel="noopener" data-repo="QuestPlates">
+      <div class="p-icon">🏷️</div>
+      <div class="p-title">QuestPlates</div>
+      <div class="p-desc" data-i18n="project.questplates.desc">Nameplate addon for WoW that highlights quest-related NPCs and enemies. Visual indicators on nameplates for tracked quest objectives.</div>
+      <div class="p-tags">
+        <span class="p-tag">Lua</span>
+        <span class="p-tag">WoW API</span>
+        <span class="p-tag">UI</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="QuestPlates">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="QuestPlates">--</span></span>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://github.com/GabHST/DebugLog" target="_blank" rel="noopener" data-repo="DebugLog">
+      <div class="p-icon">🐛</div>
+      <div class="p-title">DebugLog</div>
+      <div class="p-desc" data-i18n="project.debuglog.desc">In-game debug logging addon for WoW development. Real-time event logging, error tracking, and developer console for addon creators.</div>
+      <div class="p-tags">
+        <span class="p-tag">Lua</span>
+        <span class="p-tag">WoW API</span>
+        <span class="p-tag">Debug</span>
+      </div>
+      <div class="p-stats">
+        <span>⭐ <span class="repo-stars" data-repo="DebugLog">--</span></span>
+        <span>🍴 <span class="repo-forks" data-repo="DebugLog">--</span></span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="section-reveal">
+  <div class="section-header">
+    <div class="section-tag" data-i18n="skills.tag">// Capabilities</div>
+    <h2 class="section-title" data-i18n="skills.title">Skills</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🎮</div>
+      <div class="skill-name" data-i18n="skill.modding.name">Game Modding</div>
+      <div class="skill-desc" data-i18n="skill.modding.desc">WoW addon development, Lua scripting, game system reverse engineering, and custom UI frameworks.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🕷️</div>
+      <div class="skill-name" data-i18n="skill.scraping.name">Web Scraping</div>
+      <div class="skill-desc" data-i18n="skill.scraping.desc">Anti-detection scraping with Chrome CDP, Cloudflare bypass, stealth automation, and data extraction pipelines.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🐍</div>
+      <div class="skill-name" data-i18n="skill.python.name">Python Development</div>
+      <div class="skill-desc" data-i18n="skill.python.desc">Tool building, automation scripts, bot frameworks, and CLI applications with modern Python.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔓</div>
+      <div class="skill-name" data-i18n="skill.re.name">Reverse Engineering</div>
+      <div class="skill-desc" data-i18n="skill.re.desc">Binary analysis, protocol reverse engineering, decompilation, and understanding proprietary systems.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🗄️</div>
+      <div class="skill-name" data-i18n="skill.db.name">Database Systems</div>
+      <div class="skill-desc" data-i18n="skill.db.desc">MSSQL administration, schema design, query optimization, and game server database architecture.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🛡️</div>
+      <div class="skill-name" data-i18n="skill.security.name">Security Research</div>
+      <div class="skill-desc" data-i18n="skill.security.desc">Anti-cheat analysis, vulnerability assessment, exploit development, and security hardening.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⚡</div>
+      <div class="skill-name" data-i18n="skill.automation.name">Automation</div>
+      <div class="skill-desc" data-i18n="skill.automation.desc">Bot architecture, macro systems, workflow automation, and intelligent scripting frameworks.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🌐</div>
+      <div class="skill-name" data-i18n="skill.opensource.name">Open Source</div>
+      <div class="skill-desc" data-i18n="skill.opensource.desc">Community-driven development, public tooling, documentation, and collaborative project management.</div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section-header">
+    <div class="section-tag" data-i18n="tech.tag">// Technologies</div>
+    <h2 class="section-title" data-i18n="tech.title">Tech Stack</h2>
+  </div>
+  <div class="tech-pills">
+    <div class="tech-pill">Lua</div>
+    <div class="tech-pill">Python</div>
+    <div class="tech-pill">C#</div>
+    <div class="tech-pill">JavaScript</div>
+    <div class="tech-pill">SQL / MSSQL</div>
+    <div class="tech-pill">WoW API</div>
+    <div class="tech-pill">Chrome CDP</div>
+    <div class="tech-pill">Web Scraping</div>
+    <div class="tech-pill">Git</div>
+    <div class="tech-pill">Reverse Engineering</div>
+    <div class="tech-pill">Automation</div>
+    <div class="tech-pill">Game Servers</div>
+  </div>
+</section>
+
+<!-- MODS -->
+<section id="mods" class="section-reveal">
+  <div class="section-header">
+    <div class="section-tag" data-i18n="mods.tag">// Steam Workshop</div>
+    <h2 class="section-title" data-i18n="mods.title">Game Mods</h2>
+  </div>
+  <div class="projects-grid">
+    <a class="project-card" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3620151216" target="_blank">
+      <div class="card-header"><span class="card-icon">🩹</span><span class="card-arrow">↗</span></div>
+      <h3 class="card-title">Improve Relationships by Healing - REVAMPED</h3>
+      <p class="card-desc" data-i18n="mod.healing.desc">Complete rewrite of the original healing relationship mod. Unique faction-aware dialogues based on each faction's lore.</p>
+      <div class="card-tags">
+        <span class="tag" style="background:rgba(200,50,50,0.08);color:#f87171;border-color:rgba(200,50,50,0.15)">Kenshi</span>
+        <span class="tag">Steam Workshop</span>
+      </div>
+    </a>
+    <a class="project-card" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3624344118" target="_blank">
+      <div class="card-header"><span class="card-icon">🚪</span><span class="card-arrow">↗</span></div>
+      <h3 class="card-title">Stop NPC Gate Breaking - Wandering Traders Fix</h3>
+      <p class="card-desc" data-i18n="mod.gate.desc">Fixes wandering traders and NPCs from breaking through gates. Requires SCAR's Pathfinding FIX and Better AI.</p>
+      <div class="card-tags">
+        <span class="tag" style="background:rgba(200,50,50,0.08);color:#f87171;border-color:rgba(200,50,50,0.15)">Kenshi</span>
+        <span class="tag">Steam Workshop</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-reveal">
+  <div class="section-header">
+    <div class="section-tag" data-i18n="contact.tag">// Get in Touch</div>
+    <h2 class="section-title" data-i18n="contact.title">Contact</h2>
+  </div>
+  <div class="contact-center">
+    <p class="contact-text" data-i18n="contact.text">Have a project idea or want to collaborate? Drop me a line.</p>
+    <a class="contact-link" href="mailto:pessoalhst9723@outlook.com">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <span data-i18n="contact.btn">Send Email</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p data-i18n="footer.text">built by <span>Leet</span> — all projects open source</p>
+</footer>
+
+<script>
+/* =====================================================
+   i18n TRANSLATION SYSTEM
+   ===================================================== */
+var i18n = {
+  en: {
+    'nav.about': 'About',
+    'nav.projects': 'Projects',
+    'nav.skills': 'Skills',
+    'nav.mods': 'Mods',
+    'nav.contact': 'Contact',
+    'hero.title': 'Developer & Tool Builder',
+    'stats.repos': 'Repositories',
+    'about.tag': '// Background',
+    'about.title': 'About Me',
+    'about.text': 'I build tools for gaming communities and the open-source ecosystem. From WoW 1.12.1 addon development and reverse engineering game systems, to anti-detection web scraping with Chrome DevTools Protocol and bot architecture design. My work spans security research, database systems, and automation \u2014 always with a focus on practical, battle-tested solutions.',
+    'about.card1': 'Game Addon Dev',
+    'about.card2': 'Web Scraping',
+    'about.card3': 'Security Research & RE',
+    'about.card4': 'Bot Architecture & Automation',
+    'about.card5': 'Database & Server Systems',
+    'projects.tag': '// Featured Work',
+    'projects.title': 'Projects',
+    'project.cdp.desc': 'Anti-detection web scraper using Chrome DevTools Protocol. Bypasses Cloudflare and bot protection through real browser automation with stealth techniques.',
+    'project.vanillaguide.desc': 'Enhanced leveling guide addon for WoW 1.12.1 (Vanilla). Improved UI, quest tracking, and step-by-step guidance for efficient 1-60 leveling.',
+    'project.fillraidbots.desc': 'Automated raid slot filler for WoW private servers. Fills empty raid spots with configurable bot characters for testing and solo play.',
+    'project.pcpremake.desc': 'Remake of a classic PC utility tool with modern improvements. Updated interface, better performance, and extended feature set.',
+    'project.partypresets.desc': 'Party configuration presets manager for WoW. Save, load, and share group compositions with one click for faster dungeon and raid setup.',
+    'project.questplates.desc': 'Nameplate addon for WoW that highlights quest-related NPCs and enemies. Visual indicators on nameplates for tracked quest objectives.',
+    'project.debuglog.desc': 'In-game debug logging addon for WoW development. Real-time event logging, error tracking, and developer console for addon creators.',
+    'skills.tag': '// Capabilities',
+    'skills.title': 'Skills',
+    'skill.modding.name': 'Game Modding',
+    'skill.modding.desc': 'WoW addon development, Lua scripting, game system reverse engineering, and custom UI frameworks.',
+    'skill.scraping.name': 'Web Scraping',
+    'skill.scraping.desc': 'Anti-detection scraping with Chrome CDP, Cloudflare bypass, stealth automation, and data extraction pipelines.',
+    'skill.python.name': 'Python Development',
+    'skill.python.desc': 'Tool building, automation scripts, bot frameworks, and CLI applications with modern Python.',
+    'skill.re.name': 'Reverse Engineering',
+    'skill.re.desc': 'Binary analysis, protocol reverse engineering, decompilation, and understanding proprietary systems.',
+    'skill.db.name': 'Database Systems',
+    'skill.db.desc': 'MSSQL administration, schema design, query optimization, and game server database architecture.',
+    'skill.security.name': 'Security Research',
+    'skill.security.desc': 'Anti-cheat analysis, vulnerability assessment, exploit development, and security hardening.',
+    'skill.automation.name': 'Automation',
+    'skill.automation.desc': 'Bot architecture, macro systems, workflow automation, and intelligent scripting frameworks.',
+    'skill.opensource.name': 'Open Source',
+    'skill.opensource.desc': 'Community-driven development, public tooling, documentation, and collaborative project management.',
+    'tech.tag': '// Technologies',
+    'tech.title': 'Tech Stack',
+    'mods.tag': '// Steam Workshop',
+    'mods.title': 'Game Mods',
+    'mod.healing.desc': 'Complete rewrite of the original healing relationship mod. Unique faction-aware dialogues based on each faction\'s lore.',
+    'mod.gate.desc': 'Fixes wandering traders and NPCs from breaking through gates. Requires SCAR\'s Pathfinding FIX and Better AI.',
+    'contact.tag': '// Get in Touch',
+    'contact.title': 'Contact',
+    'contact.text': 'Have a project idea or want to collaborate? Drop me a line.',
+    'contact.btn': 'Send Email',
+    'footer.text': 'built by <span>Leet</span> \u2014 all projects open source'
+  },
+  pt: {
+    'nav.about': 'Sobre',
+    'nav.projects': 'Projetos',
+    'nav.skills': 'Habilidades',
+    'nav.mods': 'Mods',
+    'nav.contact': 'Contato',
+    'hero.title': 'Desenvolvedor & Criador de Ferramentas',
+    'stats.repos': 'Reposit\u00f3rios',
+    'about.tag': '// Sobre mim',
+    'about.title': 'Sobre Mim',
+    'about.text': 'Eu construo ferramentas para comunidades gamer e o ecossistema open-source. Desde desenvolvimento de addons para WoW 1.12.1 e engenharia reversa de sistemas de jogos, at\u00e9 web scraping anti-detec\u00e7\u00e3o com Chrome DevTools Protocol e design de arquitetura de bots. Meu trabalho abrange pesquisa de seguran\u00e7a, sistemas de banco de dados e automa\u00e7\u00e3o \u2014 sempre com foco em solu\u00e7\u00f5es pr\u00e1ticas e testadas em batalha.',
+    'about.card1': 'Dev de Addons',
+    'about.card2': 'Web Scraping',
+    'about.card3': 'Pesquisa de Seguran\u00e7a & RE',
+    'about.card4': 'Arquitetura de Bots & Automa\u00e7\u00e3o',
+    'about.card5': 'Banco de Dados & Servidores',
+    'projects.tag': '// Trabalhos',
+    'projects.title': 'Projetos',
+    'project.cdp.desc': 'Web scraper anti-detec\u00e7\u00e3o usando Chrome DevTools Protocol. Contorna Cloudflare e prote\u00e7\u00e3o anti-bot atrav\u00e9s de automa\u00e7\u00e3o real de navegador com t\u00e9cnicas stealth.',
+    'project.vanillaguide.desc': 'Addon de guia de level aprimorado para WoW 1.12.1 (Vanilla). UI melhorada, rastreamento de quests e guia passo a passo para level 1-60 eficiente.',
+    'project.fillraidbots.desc': 'Preenchedor autom\u00e1tico de vagas de raid para servidores privados de WoW. Preenche vagas vazias com personagens bot configur\u00e1veis para teste e jogo solo.',
+    'project.pcpremake.desc': 'Remake de uma ferramenta cl\u00e1ssica de utilit\u00e1rio PC com melhorias modernas. Interface atualizada, melhor performance e conjunto de recursos expandido.',
+    'project.partypresets.desc': 'Gerenciador de presets de configura\u00e7\u00e3o de grupo para WoW. Salve, carregue e compartilhe composi\u00e7\u00f5es de grupo com um clique.',
+    'project.questplates.desc': 'Addon de nameplates para WoW que destaca NPCs e inimigos relacionados a quests. Indicadores visuais nos nameplates para objetivos de quest rastreados.',
+    'project.debuglog.desc': 'Addon de log de debug in-game para desenvolvimento WoW. Log de eventos em tempo real, rastreamento de erros e console de desenvolvedor para criadores de addons.',
+    'skills.tag': '// Capacidades',
+    'skills.title': 'Habilidades',
+    'skill.modding.name': 'Modding de Jogos',
+    'skill.modding.desc': 'Desenvolvimento de addons WoW, scripting Lua, engenharia reversa de sistemas de jogos e frameworks de UI customizados.',
+    'skill.scraping.name': 'Web Scraping',
+    'skill.scraping.desc': 'Scraping anti-detec\u00e7\u00e3o com Chrome CDP, bypass de Cloudflare, automa\u00e7\u00e3o stealth e pipelines de extra\u00e7\u00e3o de dados.',
+    'skill.python.name': 'Desenvolvimento Python',
+    'skill.python.desc': 'Constru\u00e7\u00e3o de ferramentas, scripts de automa\u00e7\u00e3o, frameworks de bots e aplica\u00e7\u00f5es CLI com Python moderno.',
+    'skill.re.name': 'Engenharia Reversa',
+    'skill.re.desc': 'An\u00e1lise de bin\u00e1rios, engenharia reversa de protocolos, decompila\u00e7\u00e3o e compreens\u00e3o de sistemas propriet\u00e1rios.',
+    'skill.db.name': 'Sistemas de Banco de Dados',
+    'skill.db.desc': 'Administra\u00e7\u00e3o MSSQL, design de schema, otimiza\u00e7\u00e3o de queries e arquitetura de banco de dados para servidores de jogos.',
+    'skill.security.name': 'Pesquisa de Seguran\u00e7a',
+    'skill.security.desc': 'An\u00e1lise anti-cheat, avalia\u00e7\u00e3o de vulnerabilidades, desenvolvimento de exploits e hardening de seguran\u00e7a.',
+    'skill.automation.name': 'Automa\u00e7\u00e3o',
+    'skill.automation.desc': 'Arquitetura de bots, sistemas de macro, automa\u00e7\u00e3o de workflows e frameworks de scripting inteligentes.',
+    'skill.opensource.name': 'Open Source',
+    'skill.opensource.desc': 'Desenvolvimento comunit\u00e1rio, ferramentas p\u00fablicas, documenta\u00e7\u00e3o e gerenciamento colaborativo de projetos.',
+    'tech.tag': '// Tecnologias',
+    'tech.title': 'Stack Tecnol\u00f3gica',
+    'mods.tag': '// Steam Workshop',
+    'mods.title': 'Mods de Jogos',
+    'mod.healing.desc': 'Reescrita completa do mod original de relacionamento por cura. Di\u00e1logos \u00fanicos baseados no lore de cada fac\u00e7\u00e3o.',
+    'mod.gate.desc': 'Corrige traders e NPCs que quebram port\u00f5es. Requer SCAR\'s Pathfinding FIX e Better AI.',
+    'contact.tag': '// Contato',
+    'contact.title': 'Contato',
+    'contact.text': 'Tem uma ideia de projeto ou quer colaborar? Mande uma mensagem.',
+    'contact.btn': 'Enviar Email',
+    'footer.text': 'feito por <span>Leet</span> \u2014 todos os projetos open source'
+  }
+};
+
+var currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (i18n[lang][key]) {
+      if (key === 'footer.text') {
+        el.innerHTML = i18n[lang][key];
+      } else {
+        el.textContent = i18n[lang][key];
+      }
+    }
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  restartTypewriter();
+}
+
+document.querySelectorAll('.lang-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { setLang(btn.dataset.lang); });
+});
+
+/* =====================================================
+   TYPEWRITER EFFECT
+   ===================================================== */
+var twPhrases = {
+  en: [
+    'building tools for gamers',
+    'reverse engineering systems',
+    'scraping the unscrappable',
+    'WoW addon developer',
+    'open source everything',
+    'automating the boring stuff'
+  ],
+  pt: [
+    'construindo ferramentas para gamers',
+    'engenharia reversa de sistemas',
+    'scraping do impossivel',
+    'desenvolvedor de addons WoW',
+    'open source em tudo',
+    'automatizando o tedioso'
+  ]
+};
+
+var twIndex = 0, twCharIndex = 0, twDeleting = false, twTimeout;
+var twEl = document.querySelector('.tw-text');
+
+function typewriterTick() {
+  var phrases = twPhrases[currentLang];
+  var current = phrases[twIndex % phrases.length];
+  if (!twDeleting) {
+    twEl.textContent = current.substring(0, twCharIndex + 1);
+    twCharIndex++;
+    if (twCharIndex === current.length) {
+      twTimeout = setTimeout(function() { twDeleting = true; typewriterTick(); }, 2000);
+      return;
+    }
+    twTimeout = setTimeout(typewriterTick, 60 + Math.random() * 40);
+  } else {
+    twEl.textContent = current.substring(0, twCharIndex - 1);
+    twCharIndex--;
+    if (twCharIndex === 0) {
+      twDeleting = false;
+      twIndex++;
+      twTimeout = setTimeout(typewriterTick, 400);
+      return;
+    }
+    twTimeout = setTimeout(typewriterTick, 30);
+  }
+}
+
+function restartTypewriter() {
+  clearTimeout(twTimeout);
+  twIndex = 0; twCharIndex = 0; twDeleting = false;
+  twEl.textContent = '';
+  typewriterTick();
+}
+
+typewriterTick();
+
+/* =====================================================
+   CUSTOM CURSOR
+   ===================================================== */
+var cursorEl = document.getElementById('cursor');
+var cursorDotEl = document.getElementById('cursorDot');
+var mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+
+document.addEventListener('mousemove', function(e) {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursorDotEl.style.left = mouseX + 'px';
+  cursorDotEl.style.top = mouseY + 'px';
+});
+
+function animateCursor() {
+  cursorX += (mouseX - cursorX) * 0.15;
+  cursorY += (mouseY - cursorY) * 0.15;
+  cursorEl.style.left = cursorX + 'px';
+  cursorEl.style.top = cursorY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.querySelectorAll('a, button, .project-card, .highlight-card, .skill-card, .tech-pill').forEach(function(el) {
+  el.addEventListener('mouseenter', function() { cursorEl.classList.add('hover'); });
+  el.addEventListener('mouseleave', function() { cursorEl.classList.remove('hover'); });
+});
+
+/* =====================================================
+   PARTICLE CANVAS
+   ===================================================== */
+var canvas = document.getElementById('particles');
+var ctx = canvas.getContext('2d');
+var particlesArr = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function Particle() { this.reset(); this.y = Math.random() * canvas.height; }
+Particle.prototype.reset = function() {
+  this.x = Math.random() * canvas.width;
+  this.y = canvas.height + 10;
+  this.size = Math.random() * 2 + 0.5;
+  this.speedY = -(Math.random() * 0.8 + 0.2);
+  this.speedX = (Math.random() - 0.5) * 0.3;
+  this.opacity = Math.random() * 0.5 + 0.1;
+  var colors = ['0,212,255','168,85,247','255,107,157'];
+  this.color = colors[Math.floor(Math.random() * colors.length)];
+};
+Particle.prototype.update = function() {
+  this.y += this.speedY;
+  this.x += this.speedX;
+  if (this.y < -10) this.reset();
+};
+Particle.prototype.draw = function() {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(' + this.color + ',' + this.opacity + ')';
+  ctx.fill();
+};
+
+for (var i = 0; i < 80; i++) particlesArr.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (var j = 0; j < particlesArr.length; j++) {
+    particlesArr[j].update();
+    particlesArr[j].draw();
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* =====================================================
+   NAV SCROLL EFFECT
+   ===================================================== */
+var navEl = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  navEl.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+/* =====================================================
+   SCROLL-TRIGGERED SECTION REVEALS
+   ===================================================== */
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.section-reveal').forEach(function(el) { observer.observe(el); });
+
+/* =====================================================
+   3D TILT ON PROJECT CARDS
+   ===================================================== */
+document.querySelectorAll('.project-card').forEach(function(card) {
+  card.addEventListener('mousemove', function(e) {
+    var rect = card.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var centerX = rect.width / 2;
+    var centerY = rect.height / 2;
+    var rotateX = (y - centerY) / centerY * -6;
+    var rotateY = (x - centerX) / centerX * 6;
+    card.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
+  });
+  card.addEventListener('mouseleave', function() {
+    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+  });
+});
+
+/* =====================================================
+   GITHUB STATS (LIVE FETCH + CACHE)
+   ===================================================== */
+var REPOS = ['CDP-Scraper','VanillaGuide-Enhanced','FillRaidBots','PCPRemake','PartyPresets','QuestPlates','DebugLog'];
+var CACHE_KEY = 'gh_stats_cache';
+var CACHE_TTL = 1000 * 60 * 30;
+
+function fetchGitHubStats() {
+  var cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    var parsed = JSON.parse(cached);
+    if (Date.now() - parsed.ts < CACHE_TTL) {
+      applyStats(parsed.data);
+      return;
+    }
+  }
+  var data = {};
+  var totalStars = 0;
+  var completed = 0;
+
+  REPOS.forEach(function(repo) {
+    fetch('https://api.github.com/repos/GabHST/' + repo)
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(r) {
+        if (r) {
+          data[repo] = { stars: r.stargazers_count || 0, forks: r.forks_count || 0 };
+          totalStars += r.stargazers_count || 0;
+        }
+      })
+      .catch(function() {})
+      .finally(function() {
+        completed++;
+        if (completed === REPOS.length) {
+          data._totalStars = totalStars;
+          fetchDownloads(data);
+        }
+      });
+  });
+}
+
+function fetchDownloads(data) {
+  var totalDownloads = 0;
+  var completed = 0;
+
+  REPOS.forEach(function(repo) {
+    fetch('https://api.github.com/repos/GabHST/' + repo + '/releases')
+      .then(function(r) { return r.ok ? r.json() : []; })
+      .then(function(releases) {
+        if (Array.isArray(releases)) {
+          releases.forEach(function(release) {
+            if (release.assets) {
+              release.assets.forEach(function(asset) {
+                totalDownloads += asset.download_count || 0;
+              });
+            }
+          });
+        }
+      })
+      .catch(function() {})
+      .finally(function() {
+        completed++;
+        if (completed === REPOS.length) {
+          data._totalDownloads = totalDownloads;
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: data }));
+          applyStats(data);
+        }
+      });
+  });
+}
+
+function applyStats(data) {
+  var starsEl = document.getElementById('stat-stars');
+  var downloadsEl = document.getElementById('stat-downloads');
+  if (starsEl) starsEl.textContent = data._totalStars != null ? data._totalStars : '--';
+  if (downloadsEl) downloadsEl.textContent = data._totalDownloads != null ? data._totalDownloads : '--';
+  document.querySelectorAll('.repo-stars').forEach(function(el) {
+    var repo = el.dataset.repo;
+    if (data[repo]) el.textContent = data[repo].stars;
+  });
+  document.querySelectorAll('.repo-forks').forEach(function(el) {
+    var repo = el.dataset.repo;
+    if (data[repo]) el.textContent = data[repo].forks;
+  });
+}
+
+fetchGitHubStats();
+
+/* =====================================================
+   SMOOTH SCROLL FOR NAV LINKS
+   ===================================================== */
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
